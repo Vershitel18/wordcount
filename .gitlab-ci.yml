@@ -1,0 +1,51 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  auto_cancel:
+    on_job_failure: none
+    on_new_commit: interruptible
+
+stages:
+  - preflight
+  - build
+  - test
+
+default:
+  image: alpine:latest
+  tags: [linux]
+  timeout: 15m
+
+Check ASM formatting:
+  stage: preflight
+  before_script:
+    - apk add --no-cache python3
+  script:
+    - ci-extra/check-asm-formatting.py
+
+Check line breaks:
+  stage: preflight
+  before_script:
+    - apk add --no-cache bash dos2unix git
+  script:
+    - ci-extra/check-line-breaks.sh
+
+Build:
+  stage: build
+  before_script:
+    - apk add --no-cache nasm binutils
+    - mkdir -p build
+  script:
+    - nasm -felf64 wordcount.asm
+    - ld wordcount.o -o wordcount
+  artifacts:
+    paths:
+      - wordcount
+    expire_in: 2h
+
+Test:
+  image: cr.ct.itmo.ru/cpp/containers/haskell:latest
+  stage: test
+  needs:
+    - job: Build
+  script:
+    - cabal run --project-dir test wordcount-test -- ./wordcount

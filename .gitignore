@@ -1,0 +1,20 @@
+# IDE
+*.user
+.idea
+*.cbp
+.vs
+
+# OS
+.DS_Store
+
+# Build
+*.o
+
+# Executables
+a.out
+/hello
+/lc
+/wordcount
+
+# Haskell
+dist-newstyle/
