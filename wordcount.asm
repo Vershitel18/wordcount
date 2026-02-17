@@ -26,10 +26,10 @@ _start:
                         cmp   r10b, 4
                         jbe .whitespace
                         cmp r10b, 23
-                        je  .whitespace            
+                        je  .whitespace
 .not_whitespace:
-                        add     r9, r8 ; 
-                        xor     r8, r8 ; reset last character flag 
+                        add     r9, r8
+                        xor     r8, r8; reset last character flag 
                         jmp       .addIndex
 .whitespace:
                         mov     r8, 1 ; last character is whitespace
