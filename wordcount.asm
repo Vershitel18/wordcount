@@ -18,7 +18,7 @@ _start:
                         jz                      .eof
                         js                      print_error
                         xor                     rcx, rcx ; index in buffer
-.next_byte:    
+.next_byte:   
                         cmp     rcx, rax
                         jz     .read_loop
                         mov   r10b, [buffer + rcx]
