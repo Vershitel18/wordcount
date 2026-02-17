@@ -29,7 +29,7 @@ _start:
                         je  .whitespace
 .not_whitespace:
                         add     r9, r8
-                        xor     r8, r8; reset last character flag 
+                        xor     r8, r8; reset last character flag
                         jmp       .addIndex
 .whitespace:
                         mov     r8, 1 ; last character is whitespace
