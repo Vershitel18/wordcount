@@ -17,28 +17,27 @@ _start:
                         test                    rax, rax
                         jz                      .eof
                         js                      print_error
-                        xor                     rcx, rcx ; index in buffer
+                        xor                     ecx, ecx ; index in buffer
 .next_byte:
                         cmp     rcx, rax
                         jz     .read_loop
-                        mov   r10b, [buffer + rcx]
-                        sub   r10b, 9
-                        cmp   r10b, 4
-                        jbe .whitespace
-                        cmp r10b, 23
-                        je  .whitespace
+                        mov     r10b, [buffer + rcx]
+                        sub     r10b, 9 ; check if byte is a whitespace character [9, 13] -> [0, 4]
+                        cmp     r10b, 4
+                        jbe     .whitespace
+                        cmp     r10b, 32 - 9 ; check if byte is space character
+                        je      .whitespace
 .not_whitespace:
                         add     r9, r8
                         xor     r8, r8; reset last character flag
-                        jmp       .addIndex
+                        inc     rcx
+                        jmp     .next_byte
 .whitespace:
                         mov     r8, 1 ; last character is whitespace
-                        jmp       .addIndex
-.addIndex:
                         inc     rcx
                         jmp     .next_byte
 .eof:
-                        call print
+                        call    print
                         mov     eax, SYS_EXIT
                         xor     edi, edi
                         syscall
